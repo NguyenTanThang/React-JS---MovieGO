@@ -1,0 +1,237 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+p {
+  margin-bottom: 0 !important;
+}
+
+.img-fluid {
+    width: 100%;
+    height: 100%;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+.container-fluid {
+    width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.text-color-primary {
+    color: #f3c669;
+}
+
+/*Button*/
+.btn {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-dark {
+    border: 1px solid rgba(255,255,255,0.3);
+    background-color: #303030;
+    color: #FFF;
+    cursor: pointer;
+}
+
+.btn-dark:hover {
+    background-color: #7f8c8d;
+    color: #FFF;
+}
+
+.btn-primary {
+  border: 1px solid #f3c669;
+  background-color: #f3c669;
+  color: #FFF;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.btn-primary:hover {
+  background-color: #FFF;
+  color: #f3c669;
+}
+
+.btn-outline-primary {
+  border: 1px solid rgba(255,255,255,0.3);
+  background-color: transparent;
+  color: #FFF;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.btn-outline-primary:hover {
+  background-color: #FFF;
+  color: #f3c669;
+}
+
+/*Section Header*/
+.section-header {
+  margin-bottom: 30px;
+}
+
+.section-header::before {
+  content: "";
+  display: block;
+  height: 5px;
+  width: 100px;
+  background-color: #fff;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.section-header .left h2 {
+  color: #FFF;
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+/*Form Control*/
+.form-control {
+  width: 100%;
+  border: 2px solid #141313;
+  background-color: #141313;
+  color: #FFF;
+  outline: none;
+  font-size: 1rem;
+  padding: 10px;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  border: 2px solid #f3c669;
+}
+
+/*Scroll bar*/
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: #e1e1e1;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #f3c669;
+}
+::-webkit-scrollbar-track {
+  background: #666666;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #666666;
+}
+::-webkit-scrollbar-track:active {
+  background: #333333;
+}
+
+/*Star Widget*/
+.star-widget-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.star-widget input {
+  display: none;
+}
+
+.star-widget label {
+  font-size: 40px;
+  color: #444;
+  padding: 10px;
+  float: right;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.star-widget input:not(:checked)~label:hover,
+.star-widget input:not(:checked)~label:hover~label {
+  color: #fd4;
+}
+
+.star-widget input:checked~label {
+  color: #fd4;
+}
+
+.star-widget input#rate-5:checked~label {
+  color: #fe7;
+  text-shadow: 0 0 20px #952;
+}
+
+#rate-1:checked~div header:before {
+  content: "I just hate it 😠";
+}
+
+#rate-2:checked~div header:before {
+  content: "I don't like it 😒";
+}
+
+#rate-3:checked~div header:before {
+  content: "It is awesome 😄";
+}
+
+#rate-4:checked~div header:before {
+  content: "I just like it 😎";
+}
+
+#rate-5:checked~div header:before {
+  content: "I just love it 😍";
+}
+
+.star-widget div {
+  display: none;
+}
+
+.star-widget input:checked~div {
+  display: block;
+}
+
+.star-widget div header {
+  width: 100%;
+  font-size: 25px;
+  color: #fe7;
+  font-weight: 500;
+  margin: 5px 0 20px 0;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+  .star-widget label {
+      font-size: 25px;
+  }
+}
