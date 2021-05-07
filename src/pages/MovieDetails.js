@@ -16,7 +16,7 @@ class MovieDetails extends Component {
         const {movieID} = this.props.match.params;
 
         const movieItem = movieData.filter(movieDataItem => {
-            return movieDataItem.id == movieID;
+            return movieDataItem.id.toString() === movieID.toString();
         })[0];
 
         this.setState({
@@ -65,7 +65,7 @@ class MovieDetails extends Component {
                     <div className="movie-details-main">
 
                         <div className="movie-details-main__video">
-                            <iframe src={streamTapeCode ? `https://streamtape.com/e/${streamTapeCode}/` : `https://streamtape.com/e/Y10JVZQ4Wruv4lD/`} width="100%" height="500" allowFullScreen allowtransparency={true.toString()} allow="autoplay" scrolling="no" frameBorder="0"></iframe>
+                            <iframe src={streamTapeCode ? `https://streamtape.com/e/${streamTapeCode}/` : `https://streamtape.com/e/Y10JVZQ4Wruv4lD/`} width="100%" height="500" allowFullScreen allowtransparency={true.toString()} allow="autoplay" scrolling="no" frameBorder="0" title={name}></iframe>
                             <div className="title">
                                 <h4>{name}</h4>
                             </div>

@@ -1,3 +1,5 @@
+import React from "react";
+
 export const browseSpecialData = [
     {
         icon: <span class="material-icons">
@@ -77,9 +79,9 @@ export const genreData = [
         numberOfMovies: 42
     },
     {
-        name: "Adult",
-        desc: "This genre is not for kids",
-        imageURL: "https://images.pexels.com/photos/2632670/pexels-photo-2632670.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+        name: "Sci-fi",
+        desc: "Technically, scientific",
+        imageURL: "https://www.xtrafondos.com/wallpapers/vertical/alien-isolation-222.jpg",
         numberOfMovies: 321
     },
     {

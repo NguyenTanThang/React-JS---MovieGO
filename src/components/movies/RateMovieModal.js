@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import { Modal } from 'antd';
-import {message, Tooltip} from "antd";
 import {withRouter} from "react-router-dom";
 
 class RateMovieModal extends Component {

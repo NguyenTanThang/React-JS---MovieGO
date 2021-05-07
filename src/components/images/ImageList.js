@@ -8,7 +8,7 @@ class ImageList extends Component {
 
         return imageList.map(imageItem => {
             return <div className="image-item">
-                <a target="_blank" href={imageItem.imageURL}>
+                <a target="_blank" rel="noopener noreferrer" href={imageItem.imageURL}>
                     <img className="img-fluid" src={imageItem.imageURL} alt={imageItem.tags[0]} />
                 </a>
             </div>
