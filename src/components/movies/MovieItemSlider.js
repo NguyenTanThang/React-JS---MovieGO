@@ -28,9 +28,9 @@ class MovieItem extends Component {
                     </div>
                 </Link>
                 <div className="movie-item__info">
-                    <a href="google.com">
+                    <Link to={`/movie-details/${id}`}>
                         <h6>{name}</h6>
-                    </a>
+                    </Link>
                     <div className="movie-item-info__view">
                         <div className="icon">
                             <span className="material-icons material-icons-outlined">

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import {numberWithCommas, getDaysDiff} from "../../utils";
+import { Link } from 'react-router-dom';
 
 class MovieItem extends Component {
     render() {
         const {movieItem} = this.props;
-        const {created_date, name, imageURL, view, rating} = movieItem;
+        const {created_date, name, imageURL, view, rating, id} = movieItem;
 
         let newTag = <></>;
 
@@ -21,15 +22,15 @@ class MovieItem extends Component {
         return (
             <div className="movie-item">
                 {newTag}
-                <a href="google.com">
+                <Link to={`/movie-details/${id}`}>
                     <div className="movie-item__poster">
                             <img src={imageURL} alt={name} className="img-fluid"/>
                     </div>
-                </a>
+                </Link>
                 <div className="movie-item__info">
-                    <a href="google.com">
+                    <Link to={`/movie-details/${id}`}>
                         <h6>{name}</h6>
-                    </a>
+                    </Link>
                     <div className="movie-item-info__view">
                         <div className="icon">
                             <span className="material-icons material-icons-outlined">

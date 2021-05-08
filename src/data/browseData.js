@@ -125,5 +125,17 @@ export const genreData = [
         desc: "Remember the first time...",
         imageURL: "https://wallpaperaccess.com/full/1821420.jpg",
         numberOfMovies: 42
+    },
+    {
+        name: "Drama",
+        desc: "Little bit of gossiping",
+        imageURL: "https://wallpapershome.com/images/pages/ico_v/23323.jpg",
+        numberOfMovies: 42
+    },
+    {
+        name: "Mystery",
+        desc: "Life is mysterious",
+        imageURL: "https://wallpapers.moviemania.io/phone/movie/11324/efc09c/shutter-island-phone-wallpaper.jpg?w=1536&h=2732",
+        numberOfMovies: 42
     }
 ]
