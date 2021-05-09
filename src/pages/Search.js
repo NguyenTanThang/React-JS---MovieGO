@@ -1,21 +1,37 @@
 import React, { Component } from 'react';
 import MovieList from "../components/movies/MovieList";
 import Pagination from "../components/partials/Pagination";
-import {paginate} from "../utils";
+import {paginate, sortMoviesAndSeries} from "../utils";
 import SearchEngine from "../components/partials/SearchEngine";
 import {movieData} from "../data";
+import {connect} from "react-redux";
+import {getAllMovies} from "../actions/movieActions";
+import {getAllGenres} from "../actions/genreActions";
 
 class Search extends Component {
 
     state = {
-        searchObject: {},
+        searchObject: {
+            searchName: "",
+            orderBy: "AtoZ",
+            sortGenres: [],
+            boardMatches: false
+        },
         currentPage: 1
+    }
+
+    componentDidMount = () => {
+        this.props.getAllMovies();
+        this.props.getAllGenres();
     }
 
     setSearchObject = (searchObject) => {
         this.setState({
-            searchObject
-        })
+            searchObject: {
+            ...this.state.searchObject,
+            ...searchObject
+        }
+    })
     }
 
     clearSearchObject = () => {
@@ -23,7 +39,8 @@ class Search extends Component {
             searchObject: {
                 searchName: "",
                 orderBy: "AtoZ",
-                sortGenres: []
+                sortGenres: [],
+                boardMatches: false
             }
         })
     }
@@ -35,15 +52,20 @@ class Search extends Component {
     }
 
     render() {
-        const {changePageNumber} = this;
-        const {currentPage} = this.state;
+        const {changePageNumber, setSearchObject, clearSearchObject} = this;
+        const {currentPage, searchObject} = this.state;
+        const {movies, genres} = this.props;
 
-        const pageObject = paginate(movieData.length, currentPage, 5, 6);
-        let currentMovieData = movieData.slice(pageObject.startIndex, pageObject.endIndex + 1);
+        let currentMovieData = sortMoviesAndSeries(movies, searchObject);
+        console.log("currentMovieData");
+        console.log(currentMovieData);
+
+        const pageObject = paginate(currentMovieData.length, currentPage, 5, 6);
+        currentMovieData = currentMovieData.slice(pageObject.startIndex, pageObject.endIndex + 1);
 
         return (
             <div className='search-page'>
-                <SearchEngine/>
+                <SearchEngine setSearchObject={setSearchObject} clearSearchObject={clearSearchObject} searchObject={searchObject} genres={genres}/>
                 <Pagination pageObject={pageObject} onChangePageNumber={changePageNumber}/>
                 <div style={{marginBottom: "20px"}}></div>
                 <MovieList movieList={currentMovieData}/>
@@ -54,4 +76,23 @@ class Search extends Component {
     }
 }
 
-export default Search;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getAllMovies: () => {
+            dispatch(getAllMovies())
+        },
+        getAllGenres: () => {
+            dispatch(getAllGenres())
+        },
+    }
+}
+
+const mapStateToProps = (state) => {
+    return {
+        movies: state.movieReducer.movies,
+        genres: state.genreReducer.genres,
+        loading: state.loadingReducer.loading
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

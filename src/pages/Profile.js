@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
-import {signUp} from "../requests";
+import {updateProfile} from "../requests";
 import {message} from "antd";
+import { authenticationService } from '../_services';
 
-class SignUp extends Component {
+class Profile extends Component {
 
     state = {
-        username: "",
-        email: "",
+        username: authenticationService.currentUserValue.username,
         password: "",
         confirmPassword: ""
     }
@@ -15,18 +15,18 @@ class SignUp extends Component {
     onSubmit = async (e) => {
         e.preventDefault();
         message.destroy();
-        const {username, email, password, confirmPassword} = this.state;
+        const {username, password, confirmPassword} = this.state;
 
         if (password !== confirmPassword) {
             return message.error("Confirm password must be the same as password");
         }
 
-        const {success} = await signUp({
-            username, email, password
+        const {success} = await updateProfile({
+            username, password
         });
 
         if (success) {
-            this.props.history.push("/sign-in");
+            this.props.history.push("/");
         }
     }
 
@@ -38,7 +38,7 @@ class SignUp extends Component {
 
     render() {
         const {onChange, onSubmit} = this;
-        const {username, email, password, confirmPassword} = this.state;
+        const {username, password, confirmPassword} = this.state;
 
         return (
             <div className="sign-up-page standalone-page">
@@ -51,23 +51,20 @@ class SignUp extends Component {
                             <input className="form-control" type="text" required placeholder="Username" name="username" onChange={onChange} value={username}/>
                         </div>
                         <div className="form-group">
-                            <input className="form-control" type="email" required placeholder="Email Address" name="email" onChange={onChange} value={email}/>
+                            <input className="form-control" type="password" required placeholder="New Password" name="password" onChange={onChange} value={password}/>
                         </div>
                         <div className="form-group">
-                            <input className="form-control" type="password" required placeholder="Password" name="password" onChange={onChange} value={password}/>
-                        </div>
-                        <div className="form-group">
-                            <input className="form-control" type="password" required placeholder="Confirm Password" name="confirmPassword" onChange={onChange} value={confirmPassword}/>
+                            <input className="form-control" type="password" required placeholder="Confirm New Password" name="confirmPassword" onChange={onChange} value={confirmPassword}/>
                         </div>
                         <div>
-                            <button type="submit" className="btn btn-primary btn-block">CREATE ACCOUNT</button>
+                            <button type="submit" className="btn btn-primary btn-block">SAVE CHANGES</button>
                         </div>
                     </form>
                 </div>
                 <div className="sign-in-footer">
-                    <p>Already have an account?</p>
-                    <Link to="/sign-in" className="btn btn-outline-primary btn-block">
-                        SIGN IN
+                    <p>Don't want to change your profile?</p>
+                    <Link to="/" className="btn btn-outline-primary btn-block">
+                        GO BACK HOME
                     </Link>
                 </div>
                 </div>
@@ -76,4 +73,5 @@ class SignUp extends Component {
     }
 }
 
-export default SignUp;
+export default Profile;
+

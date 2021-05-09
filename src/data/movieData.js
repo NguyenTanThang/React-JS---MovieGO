@@ -168,10 +168,6 @@ for (let i = 0; i < imdbIDList.length; i++) {
     };
 
     ans.push(movieItem);
-
-    console.log(movieItem);
 }
-
-console.log(JSON.stringify(ans));
 
 export const movieData = ans

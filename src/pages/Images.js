@@ -4,6 +4,8 @@ import Pagination from "../components/partials/Pagination";
 import {imageData, getImageTagsList} from "../data";
 import {Select} from "antd";
 import {paginate} from "../utils";
+import {getAllImages} from "../actions/imageActions";
+import {connect} from "react-redux";
 
 const { Option } = Select;
 
@@ -12,6 +14,10 @@ class Search extends Component {
     state = {
         tags: [],
         currentPage: 1
+    }
+
+    componentDidMount() {
+        this.props.getAllImages();
     }
 
     setTags = (searchObject) => {
@@ -34,7 +40,8 @@ class Search extends Component {
     }
 
     renderTagOptions = () => {
-        const tags = getImageTagsList(imageData);
+        const {images} = this.props;
+        const tags = getImageTagsList(images);
 
         return tags.map(tag => {
             return(
@@ -44,7 +51,8 @@ class Search extends Component {
     }
 
     handleTagChange = (value) => {
-        const tags = getImageTagsList(imageData);
+        const {images} = this.props;
+        const tags = getImageTagsList(images);
 
         if (value.length === 0) {
             return this.setState({
@@ -70,8 +78,9 @@ class Search extends Component {
     render() {
         const {changePageNumber, renderTagOptions, handleTagChange} = this;
         const {currentPage, tags} = this.state;
+        const {images} = this.props;
 
-        let currentImageData = tags.length > 0 ? imageData.filter(currentImageDataItem => {
+        let currentImageData = tags.length > 0 ? images.filter(currentImageDataItem => {
             let result = false;
             for (let i = 0; i < tags.length; i++) {
                 const tag = tags[i];
@@ -81,7 +90,7 @@ class Search extends Component {
                 }
             }
             return result;
-        }) : imageData;
+        }) : images;
         const pageObject = paginate(currentImageData.length, currentPage, 6, 6);
         currentImageData = currentImageData.slice(pageObject.startIndex, pageObject.endIndex + 1);
 
@@ -111,4 +120,19 @@ class Search extends Component {
     }
 }
 
-export default Search;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getAllImages: () => {
+            dispatch(getAllImages())
+        }
+    }
+}
+
+const mapStateToProps = (state) => {
+    return {
+        images: state.imageReducer.images,
+        loading: state.loadingReducer.loading
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

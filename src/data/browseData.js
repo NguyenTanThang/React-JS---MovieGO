@@ -7,7 +7,8 @@ export const browseSpecialData = [
         </span>,
         title: "TRENDING",
         subTitle: "Popular movies",
-        backgroundURL: "https://i.imgur.com/WArLTEm.jpg"
+        backgroundURL: "https://i.imgur.com/WArLTEm.jpg",
+        linkTo: "/browse/trending"
     },
     {
         icon: <span class="material-icons">
@@ -15,7 +16,8 @@ export const browseSpecialData = [
         </span>,
         title: "NEWLY ADDED",
         subTitle: "Just got added",
-        backgroundURL: "https://i.imgur.com/QPwkQN0.jpg"
+        backgroundURL: "https://i.imgur.com/QPwkQN0.jpg",
+        linkTo: "/search"
     },
     {
         icon: <span class="material-icons">
@@ -23,7 +25,8 @@ export const browseSpecialData = [
         </span>,
         title: "RANDOM",
         subTitle: "Feeling lucky?",
-        backgroundURL: "https://i.imgur.com/KuF1imO.jpg"
+        backgroundURL: "https://i.imgur.com/KuF1imO.jpg",
+        linkTo: "/browse/random"
     },
     {
         icon: <span class="material-icons">
@@ -31,7 +34,8 @@ export const browseSpecialData = [
         </span>,
         title: "IMAGES",
         subTitle: "A peak at the movies",
-        backgroundURL: "https://i.imgur.com/rs03RFT.jpg"
+        backgroundURL: "https://i.imgur.com/rs03RFT.jpg",
+        linkTo: "/images"
     }
 ]
 

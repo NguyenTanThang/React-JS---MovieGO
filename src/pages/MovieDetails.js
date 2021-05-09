@@ -1,26 +1,34 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import {movieData} from "../data";
+import {getMovieByIDAxios} from "../requests";
 import {numberWithCommas, getRandomInArray, parseDateMoment} from "../utils";
 import MovieList from "../components/movies/MovieList";
 import RateMovieModal from "../components/movies/RateMovieModal";
 import { Space } from 'antd';
+import {connect} from "react-redux";
+import {getAllMovies} from "../actions/movieActions";
 
 class MovieDetails extends Component {
 
     state = {
-        movieItem: ""
+        movieItem: "",
+        randomMovies: []
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        console.log(this.props);
+        this.props.getAllMovies();
         const {movieID} = this.props.match.params;
+        console.log(this.props);
+        const {movies} = this.props;
 
-        const movieItem = movieData.filter(movieDataItem => {
-            return movieDataItem.id.toString() === movieID.toString();
-        })[0];
+        const randomMovies = getRandomInArray(movies, 6);
+        const movieItem = await getMovieByIDAxios(movieID);
 
         this.setState({
-            movieItem
+            movieItem,
+            randomMovies
         })
     }
 
@@ -44,10 +52,63 @@ class MovieDetails extends Component {
         </Space>
     }
 
-    render() {
-        const {renderGenreList} = this;
+    renderActorList = () => {
         const {movieItem} = this.state;
-        const randomMovies = getRandomInArray(movieData, 6);
+
+        const {IMDBOject} = movieItem;
+
+        let {Actors} = IMDBOject;
+
+        Actors = Actors.split(", ");
+
+        return Actors.map(Actor => {
+            return (
+                <Link to="/">
+                    {Actor}
+                </Link>
+            )
+        })
+    }
+
+    renderDirectorList = () => {
+        const {movieItem} = this.state;
+
+        const {IMDBOject} = movieItem;
+
+        let {Director} = IMDBOject;
+
+        Director = Director.split(", ");
+
+        return Director.map(directorItem => {
+            return (
+                <Link to="/">
+                    {directorItem}
+                </Link>
+            )
+        })
+    }
+
+    renderProductionList = () => {
+        const {movieItem} = this.state;
+
+        const {IMDBOject} = movieItem;
+
+        let {Production} = IMDBOject;
+
+        Production = Production.split(", ");
+
+        return Production.map(production => {
+            return (
+                <Link to="/">
+                    {production}
+                </Link>
+            )
+        })
+    }
+
+    render() {
+        const {renderGenreList, renderActorList, renderDirectorList, renderProductionList} = this;
+        const {movieItem, randomMovies} = this.state;
 
         if (!movieItem) {
             return (
@@ -55,7 +116,9 @@ class MovieDetails extends Component {
             )
         }
 
-        const {name, created_date, imageURL, view, rating, streamTapeCode} = movieItem;
+        const {name, created_date, imageURL, view, rating, streamTapeCode, IMDBOject} = movieItem;
+
+        let {Awards, Plot, Released, imdbRating, imdbVotes, BoxOffice} = IMDBOject;
 
         return (
             <div className="movie-details-page">
@@ -106,24 +169,14 @@ class MovieDetails extends Component {
                                         <li>
                                             <h5>Actors</h5>
                                             <p className=" movie-description-details-list">
-                                                    <Link to="/">
-                                                        Tim Robbins
-                                                    </Link>
-                                                    <Link to="/">
-                                                        Morgan Freeman
-                                                    </Link>
-                                                    <Link to="/">
-                                                        Bob Gunton
-                                                    </Link>
+                                                {renderActorList()}
                                             </p>
                                         </li>
                                         
                                         <li>
                                             <h5>Directors</h5>
                                             <p className="movie-description-details-list">
-                                                    <Link to="/">
-                                                        Frank Darabont
-                                                    </Link>
+                                                    {renderDirectorList()}
                                             </p>
                                         </li>
                                     </div>
@@ -133,11 +186,11 @@ class MovieDetails extends Component {
                                     <div className="row">
                                         <li>
                                             <h5>IMDB Rating</h5>
-                                            <p><span className="text-color-primary">9.3</span>/10 (2,381,013 votes)</p>
+                                            <p><span className="text-color-primary">{imdbRating}</span>/10 ({imdbVotes} votes)</p>
                                         </li>
                                         <li>
                                             <h5>Box Office</h5>
-                                            <p>$28,699,976</p>
+                                            <p>{BoxOffice}</p>
                                         </li>
                                     </div>
                                 </ul>
@@ -146,7 +199,7 @@ class MovieDetails extends Component {
                                     <div className="row">
                                         <li>
                                             <h5>Release Date</h5>
-                                            <p>14 Oct 1994</p>
+                                            <p>{Released}</p>
                                         </li>
                                         <li>
                                             <h5>Uploaded Date</h5>
@@ -161,17 +214,12 @@ class MovieDetails extends Component {
                                         <li>
                                             <h5>Production</h5>
                                             <p className="movie-description-details-list">
-                                                <Link to="/">
-                                                    Columbia Pictures
-                                                </Link> 
-                                                <Link to="/">
-                                                    Castle Rock Entertainment
-                                                </Link>
+                                                {renderProductionList()}
                                             </p>
                                         </li>
                                         <li>
                                             <h5>Awards</h5>
-                                            <p>Nominated for 7 Oscars. Another 21 wins & 36 nominations.</p>
+                                            <p>{Awards}</p>
                                         </li>
                                     </div>
                                 </ul>
@@ -186,7 +234,7 @@ class MovieDetails extends Component {
 
                             <div className="movie-details-main-info__plot">
                                 <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus faucibus aliquet leo ut convallis. Curabitur non elit nec nunc varius hendrerit. Cras venenatis sapien neque, vitae malesuada metus pharetra et. Integer at aliquam leo. Aliquam erat volutpat. Aliquam tempor tempor mauris, vel dictum sapien placerat nec. Aenean pulvinar at diam ac viverra.
+                                    {Plot}
                                 </p>
                             </div>
                         </div>
@@ -205,4 +253,19 @@ class MovieDetails extends Component {
     }
 }
 
-export default MovieDetails;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getAllMovies: () => {
+            dispatch(getAllMovies())
+        }
+    }
+}
+
+const mapStateToProps = (state) => {
+    return {
+        movies: state.movieReducer.movies,
+        loading: state.loadingReducer.loading
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MovieDetails);

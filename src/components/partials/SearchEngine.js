@@ -15,10 +15,7 @@ class GenreModal extends React.Component {
     };
   
     handleOk = () => {
-      this.setState({ loading: true });
-      setTimeout(() => {
-        this.setState({ loading: false, visible: false });
-      }, 3000);
+      this.setState({ visible: false });
     };
   
     handleCancel = () => {
@@ -26,20 +23,20 @@ class GenreModal extends React.Component {
     };
 
     handleChangeBoardMatches = (checked) => {
-        const {setSearchObject} = this.props;
-        setSearchObject({
+        const {setSearchObjectLocal} = this.props;
+        setSearchObjectLocal({
             boardMatches: checked
         })
     }
 
     renderGenreSearchItems = () => {
-        const {searchObject, setSearchObject} = this.props;
-        const {sortGenres} = searchObject;
+        const {searchObjectLocal, setSearchObjectLocal, genres} = this.props;
+        const {sortGenres} = searchObjectLocal;
 
-        return genreData.map(genreDataItem => {
+        return genres.map(genreDataItem => {
             if (sortGenres.includes(genreDataItem.name)) {
                 return <li className="search-genre-item active" onClick={() => {
-                    setSearchObject({
+                  setSearchObjectLocal({
                         sortGenres: sortGenres.filter(genreItem => {
                             return genreItem !== genreDataItem.name;
                         })
@@ -49,7 +46,7 @@ class GenreModal extends React.Component {
                 </li>
             }
             return <li className="search-genre-item" onClick={() => {
-                setSearchObject({
+              setSearchObjectLocal({
                     sortGenres: [...sortGenres, genreDataItem.name]
                 })
             }}>
@@ -61,8 +58,8 @@ class GenreModal extends React.Component {
     render() {
       const { visible, loading } = this.state;
       const {handleChangeBoardMatches, renderGenreSearchItems} = this;
-      const {searchObject} = this.props;
-    const {boardMatches} = searchObject;
+      const {searchObjectLocal} = this.props;
+      const {boardMatches} = searchObjectLocal;
 
       return (
         <>
@@ -129,10 +126,7 @@ class SortModal extends React.Component {
     };
   
     handleOk = () => {
-      this.setState({ loading: true });
-      setTimeout(() => {
-        this.setState({ loading: false, visible: false });
-      }, 3000);
+      this.setState({ visible: false });
     };
   
     handleCancel = () => {
@@ -140,13 +134,13 @@ class SortModal extends React.Component {
     };
 
     renderSortSearchItems = () => {
-        const {searchObject, setSearchObject} = this.props;
-        const {orderBy} = searchObject;
+        const {searchObjectLocal, setSearchObjectLocal} = this.props;
+        const {orderBy} = searchObjectLocal;
 
         return sortByDetails.map(genreDataItem => {
             if (orderBy === genreDataItem.key) {
                 return <li className="search-genre-item active" onClick={() => {
-                    setSearchObject({
+                  setSearchObjectLocal({
                         orderBy: genreDataItem.key
                     })
                 }}>
@@ -154,7 +148,7 @@ class SortModal extends React.Component {
                 </li>
             }
             return <li className="search-genre-item" onClick={() => {
-                setSearchObject({
+              setSearchObjectLocal({
                     orderBy: genreDataItem.key
                 })
             }}>
@@ -212,58 +206,70 @@ class SortModal extends React.Component {
 class SearchEngine extends Component {
 
     state = {
-        searchObject: {
-            searchName: "",
-            orderBy: "AtoZ",
-            sortGenres: [],
-            boardMatches: false
-        },
-    }
+      searchObjectLocal: {
+          searchName: "",
+          orderBy: "AtoZ",
+          sortGenres: [],
+          boardMatches: false
+      }
+  }
 
-    setSearchObject = (searchObject) => {
-        this.setState({
-            searchObject: {
-                ...this.state.searchObject,
-                ...searchObject
-            }
-        })
-    }
+    setSearchObjectLocal = (newSearchObject) => {
+      const {setSearchObject} = this.props;
 
-    clearSearchObject = () => {
-        this.setState({
-            searchObject: {
-                searchName: "",
-                orderBy: "AtoZ",
-                sortGenres: [],
-                boardMatches: false
-            }
-        })
-    }
+      this.setState({
+        searchObjectLocal: {
+          ...this.state.searchObjectLocal,
+          ...newSearchObject
+        }
+      })
+      setSearchObject({
+          ...this.state.searchObjectLocal,
+          ...newSearchObject
+      })
+  }
+
+  clearSearchObjectLocal = () => {
+    const {clearSearchObject} = this.props;
+
+      this.setState({
+        searchObjectLocal: {
+              searchName: "",
+              orderBy: "AtoZ",
+              sortGenres: [],
+              boardMatches: false
+          }
+      })
+      clearSearchObject();
+  }
 
     render() {
-        const {searchObject} = this.state;
-        const {clearSearchObject, setSearchObject} = this;
+      const {setSearchObjectLocal, clearSearchObjectLocal} = this;
+      const {searchObjectLocal} = this.state;
+      const {genres} = this.props;
 
         return (
             <div className="search-engine">
                 <div className="search-engine__search-bar">
                     <div className="container-fluid">
                         <input type="text" placeholder="Search..." className="form-control" onChange={(e) => {
-                            setSearchObject({searchName: e.target.value})
-                        }} value={searchObject.searchName}/>
+                            setSearchObjectLocal({
+                              searchName: e.target.value
+                            })
+                        }} value={searchObjectLocal.searchName}/>
                     </div>
                 </div>
                 <div className="search-engine__utils-list">
                     <div className="container-fluid">
                         <ul>
                             <li>
-                                <GenreModal searchObject={searchObject} setSearchObject={setSearchObject}/>
+                                <GenreModal searchObjectLocal={searchObjectLocal} setSearchObjectLocal={setSearchObjectLocal} genres={genres}/>
                             </li>
                             <li>
-                                <SortModal searchObject={searchObject} setSearchObject={setSearchObject}/>
+                                <SortModal searchObjectLocal={searchObjectLocal} setSearchObjectLocal={setSearchObjectLocal}/>
                             </li>
                             <li>
-                                <div className="search-util__item" onClick={clearSearchObject}>
+                                <div className="search-util__item" onClick={clearSearchObjectLocal}>
                                     <div className="icon">
                                         <span class="material-icons">
                                             restart_alt

@@ -8,7 +8,7 @@ class MovieList extends Component {
         const {movieList} = this.props;
 
         return movieList.map(movieItem => {
-            return <MovieItem key={shortid()} movieItem={movieItem}/>
+            return <MovieItem key={movieItem._id} movieItem={movieItem}/>
         })
     }
 

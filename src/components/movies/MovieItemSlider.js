@@ -5,7 +5,7 @@ import {numberWithCommas, getDaysDiff} from "../../utils";
 class MovieItem extends Component {
     render() {
         const {movieItem} = this.props;
-        const {created_date, name, imageURL, view, rating, id} = movieItem;
+        const {created_date, name, imageURL, view, rating, _id} = movieItem;
 
         let newTag = <></>;
 
@@ -22,13 +22,13 @@ class MovieItem extends Component {
         return (
             <div className="movie-item-slider">
                 {newTag}
-                <Link to={`/movie-details/${id}`}>
+                <Link to={`/movie-details/${_id}`}>
                     <div className="movie-item__poster">
                             <img src={imageURL} alt={name} className="img-fluid"/>
                     </div>
                 </Link>
                 <div className="movie-item__info">
-                    <Link to={`/movie-details/${id}`}>
+                    <Link to={`/movie-details/${_id}`}>
                         <h6>{name}</h6>
                     </Link>
                     <div className="movie-item-info__view">

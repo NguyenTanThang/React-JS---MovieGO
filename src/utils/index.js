@@ -1,6 +1,8 @@
 export * from "./DOMcode";
 export * from "./pagination";
 export * from "./dateParser";
+export * from "./sorter";
+export * from "./createNotification";
 
 export const getRandomInArray = (arr, numberOfElements) => {
     // Shuffle array
