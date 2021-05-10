@@ -33,7 +33,7 @@ class WatchLater extends Component {
         const {changePageNumber} = this;
         const {currentPage, movies} = this.state;
 
-        const pageObject = paginate(movies.length, currentPage, 5, 6);
+        const pageObject = paginate(movies.length, currentPage, 15, 6);
         let currentMovieData = movies.slice(pageObject.startIndex, pageObject.endIndex + 1);
 
         return (

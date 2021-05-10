@@ -1,25 +1,35 @@
 import React, { Component } from 'react';
 import {movieData} from "../data";
 import {movieHeaderList} from "../helpers";
+import {getAllMoviesRecAxios} from "../requests";
 import MovieList from "../components/movies/MovieListSlider";
 import {connect} from "react-redux";
 import {getAllMovies} from "../actions/movieActions";
 
 class Home extends Component {
 
-    componentDidMount() {
+    state = {
+        recSections: []
+    }
+
+    async componentDidMount() {
         this.props.getAllMovies();
+        const recSections = await getAllMoviesRecAxios();
+        this.setState({
+            recSections
+        })
     }
 
     renderMovieListSliders = () => {
         const {movies} = this.props;
+        const {recSections} = this.state;
 
         let content = [];
 
-        for (let index = 0; index < 4; index++) {
+        for (let index = 0; index < recSections.length; index++) {
             content.push(
                 <div className="home-movie-slider">
-                    <MovieList movieList={movies} headerDetails={movieHeaderList[index]}/>
+                    <MovieList movieList={recSections[index]} headerDetails={movieHeaderList[index]}/>
                 </div>
             )
         }

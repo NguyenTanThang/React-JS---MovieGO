@@ -12,6 +12,7 @@ import MovieDetails from "./pages/MovieDetails";
 import WatchLater from "./pages/WatchLater";
 import Images from "./pages/Images";
 import Browse from "./pages/Browse";
+import Trending from "./pages/Trending";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Logout from "./pages/Logout";
@@ -25,7 +26,8 @@ function App() {
         <Switch>
           <Route exact component={Home} path="/"/>
           <Route component={SignIn} path="/sign-in"/>
-          <Route component={Browse} path="/browse"/>
+          <Route component={Browse} path="/browse" exact/>
+          <Route component={Trending} path="/browse/:variation" exact/>
           <Route component={Search} path="/search"/>
           <Route component={SignUp} path="/sign-up"/>
           <Route component={Images} path="/images"/>

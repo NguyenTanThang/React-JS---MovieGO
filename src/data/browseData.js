@@ -17,7 +17,7 @@ export const browseSpecialData = [
         title: "NEWLY ADDED",
         subTitle: "Just got added",
         backgroundURL: "https://i.imgur.com/QPwkQN0.jpg",
-        linkTo: "/search"
+        linkTo: "/search?s=date-desc"
     },
     {
         icon: <span class="material-icons">

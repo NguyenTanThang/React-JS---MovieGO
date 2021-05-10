@@ -31,6 +31,43 @@ export const getAllMoviesAxios = async () => {
     }
 }
 
+export const getAllMoviesRecAxios = async () => {
+    try {
+        const res = await axios.get(`${MOVIE_URL}/rec`);
+
+        let {
+            recMoviesObject,
+            listOfNumberOfViews
+        } = res.data.data;
+        let {
+            trendingMovies,
+            topRatingMovies,
+            newReleaseMovies,
+            randomMovies
+        } = recMoviesObject;
+        let recSections = [
+            trendingMovies,
+            topRatingMovies,
+            newReleaseMovies,
+            randomMovies
+        ];
+
+        for (let i = 0; i < recSections.length; i++) {
+            const recSection = recSections[i];
+            recSections[i] = recSection.map(recSectionItem => {
+                return {
+                    ...recSectionItem,
+                    view: listOfNumberOfViews[recSectionItem._id].numberOfViews
+                }
+            })
+        }
+
+        return recSections;
+    } catch (error) {
+        console.log(error);
+        message.error(error.message, 5);
+    }
+}
 
 export const getMovieByIDAxios = async (movieID) => {
     try {

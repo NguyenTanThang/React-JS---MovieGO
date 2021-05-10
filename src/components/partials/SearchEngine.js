@@ -214,6 +214,51 @@ class SearchEngine extends Component {
       }
   }
 
+  componentDidMount() {
+    const {setSearchObject, searchQuery} = this.props;
+    const {t, g, s} = searchQuery;
+
+      if (t) {
+        this.setState({
+          searchObjectLocal: {
+            ...this.state.searchObjectLocal,
+            searchName: t
+          }
+        })
+        setSearchObject({
+            ...this.state.searchObjectLocal,
+            searchName: t
+        })
+    }
+
+    if (g) {
+        this.setState({
+          searchObjectLocal: {
+            ...this.state.searchObjectLocal,
+            sortGenres: [g]
+          }
+        })
+        setSearchObject({
+            ...this.state.searchObjectLocal,
+            sortGenres: [g]
+        })
+    }
+
+      if (s) {
+        this.setState({
+          searchObjectLocal: {
+            ...this.state.searchObjectLocal,
+            orderBy: s
+          }
+        })
+        setSearchObject({
+            ...this.state.searchObjectLocal,
+            orderBy: s
+        })
+    }
+    
+  }
+
     setSearchObjectLocal = (newSearchObject) => {
       const {setSearchObject} = this.props;
 

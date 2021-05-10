@@ -7,7 +7,7 @@ class GenreItemBrowse extends Component {
         const {numberOfMovies, imageURL, desc, name} =  genreItem;
 
         return (
-            <Link className="browse-genre-item">
+            <Link to={`/search?g=${name}`} className="browse-genre-item">
                     <div className="browse-genre-item__image">
                         <img src={imageURL} className="img-fluid" alt={name} />
                     </div>

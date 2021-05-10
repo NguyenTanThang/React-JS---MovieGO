@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MovieList from "../components/movies/MovieList";
 import Pagination from "../components/partials/Pagination";
-import {paginate, sortMoviesAndSeries} from "../utils";
+import {paginate, sortMoviesAndSeries, extractQueryString} from "../utils";
 import SearchEngine from "../components/partials/SearchEngine";
 import {movieData} from "../data";
 import {connect} from "react-redux";
@@ -30,7 +30,8 @@ class Search extends Component {
             searchObject: {
             ...this.state.searchObject,
             ...searchObject
-        }
+        },
+        currentPage: 1
     })
     }
 
@@ -41,7 +42,8 @@ class Search extends Component {
                 orderBy: "AtoZ",
                 sortGenres: [],
                 boardMatches: false
-            }
+            },
+            currentPage: 1
         })
     }
 
@@ -55,17 +57,18 @@ class Search extends Component {
         const {changePageNumber, setSearchObject, clearSearchObject} = this;
         const {currentPage, searchObject} = this.state;
         const {movies, genres} = this.props;
+        const searchQuery = extractQueryString(this.props);
 
         let currentMovieData = sortMoviesAndSeries(movies, searchObject);
         console.log("currentMovieData");
         console.log(currentMovieData);
 
-        const pageObject = paginate(currentMovieData.length, currentPage, 5, 6);
+        const pageObject = paginate(currentMovieData.length, currentPage, 15, 6);
         currentMovieData = currentMovieData.slice(pageObject.startIndex, pageObject.endIndex + 1);
 
         return (
             <div className='search-page'>
-                <SearchEngine setSearchObject={setSearchObject} clearSearchObject={clearSearchObject} searchObject={searchObject} genres={genres}/>
+                <SearchEngine searchQuery={searchQuery} setSearchObject={setSearchObject} clearSearchObject={clearSearchObject} searchObject={searchObject} genres={genres}/>
                 <Pagination pageObject={pageObject} onChangePageNumber={changePageNumber}/>
                 <div style={{marginBottom: "20px"}}></div>
                 <MovieList movieList={currentMovieData}/>

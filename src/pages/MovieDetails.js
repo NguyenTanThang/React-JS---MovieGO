@@ -9,7 +9,7 @@ import { Space } from 'antd';
 import {connect} from "react-redux";
 import {getAllMovies} from "../actions/movieActions";
 import {getReviewsByMovieID} from "../actions/reviewActions";
-import {addWatchLater, deleteWatchLater, getWatchLaterByCustomerIDAndMovieID, getAllMoviesAxios} from "../requests";
+import {addWatchLater, deleteWatchLater, getWatchLaterByCustomerIDAndMovieID, getAllMoviesAxios, addView} from "../requests";
 import {isObjectEmpty} from '../utils';
 import {authenticationService} from '../_services';
 
@@ -36,6 +36,7 @@ class MovieDetails extends Component {
             loggedIn = true;
             const customerID = currentUser._id;
             const watchLaterItem = await getWatchLaterByCustomerIDAndMovieID(customerID, movieID);
+            await addView(customerID, movieID);
 
             if (!watchLaterItem || isObjectEmpty(watchLaterItem)) {
                 liked = false;
@@ -151,7 +152,7 @@ class MovieDetails extends Component {
         }
         
         genreContent = genres.map(genreItem => {
-            return <Link to="/search" className=" search-genre-item genre-box-item">
+            return <Link to={`/search?g=${genreItem}`} className=" search-genre-item genre-box-item">
                 {genreItem}
             </Link>
         })
@@ -172,7 +173,7 @@ class MovieDetails extends Component {
 
         return Actors.map(Actor => {
             return (
-                <Link to="/">
+                <Link to={`/search?t=${Actor}`}>
                     {Actor}
                 </Link>
             )
@@ -190,7 +191,7 @@ class MovieDetails extends Component {
 
         return Director.map(directorItem => {
             return (
-                <Link to="/">
+                <Link to={`/search?t=${directorItem}`}>
                     {directorItem}
                 </Link>
             )
@@ -217,7 +218,7 @@ class MovieDetails extends Component {
 
     render() {
         const {renderGenreList, renderActorList, renderDirectorList, renderProductionList, renderLikeButton, calculateRating, renderRatingButton} = this;
-        const {movieItem, randomMovies} = this.state;
+        const {movieItem, randomMovies, loggedIn} = this.state;
 
         if (!movieItem) {
             return (
@@ -251,12 +252,15 @@ class MovieDetails extends Component {
                                 </div>
                             <p>{numberWithCommas(view)} views</p>
 
-                            <div className="movie-details-main-video__utils">
+                            {loggedIn ? (<div className="movie-details-main-video__utils">
                                 <Space>
                                     {renderRatingButton()}
                                     {renderLikeButton()}
-                            </Space>
-                            </div>
+                                </Space>
+                            </div>) : (<div style={{
+                                marginBottom: "20px"
+                            }}></div>)}
+                            
                         </div>
 
                         <div className="movie-details-main__description">

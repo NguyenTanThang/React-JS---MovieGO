@@ -1,8 +1,14 @@
+import queryString from "query-string";
 export * from "./DOMcode";
 export * from "./pagination";
 export * from "./dateParser";
 export * from "./sorter";
 export * from "./createNotification";
+
+export const extractQueryString = (props) => {
+    const parsed = queryString.parse(props.location.search);
+    return parsed;
+}
 
 export const isObjectEmpty = obj => {
     return Object.keys(obj).length === 0 && obj.constructor === Object;
