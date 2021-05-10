@@ -24,6 +24,7 @@ class MovieDetails extends Component {
 
     async componentDidMount() {
         const {movieID} = this.props.match.params;
+        await addView(movieID);
         this.props.getReviewsByMovieID(movieID);
         const movies = await getAllMoviesAxios();
 
@@ -36,7 +37,6 @@ class MovieDetails extends Component {
             loggedIn = true;
             const customerID = currentUser._id;
             const watchLaterItem = await getWatchLaterByCustomerIDAndMovieID(customerID, movieID);
-            await addView(customerID, movieID);
 
             if (!watchLaterItem || isObjectEmpty(watchLaterItem)) {
                 liked = false;

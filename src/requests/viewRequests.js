@@ -8,13 +8,16 @@ import {
 
 const VIEW_URL = `${MAIN_PROXY_URL}/views`;
 
-export const addView = async (customerID, movieID) => {
+export const addView = async (movieID) => {
     try {
         //message.loading("Adding to your watch later list", 0);
 
         const res = await axios.post(`${VIEW_URL}/add`, {
-            customerID, movieID
+            movieID
         });
+
+        console.log("view data");
+        console.log(res.data);
 
         /*
         message.destroy();
