@@ -9,6 +9,7 @@ import PrivateRoute from "./components/partials/PrivateRoute";
 import Home from "./pages/Home";
 import Search from "./pages/Search";
 import MovieDetails from "./pages/MovieDetails";
+import WatchLater from "./pages/WatchLater";
 import Images from "./pages/Images";
 import Browse from "./pages/Browse";
 import SignIn from "./pages/SignIn";
@@ -28,6 +29,7 @@ function App() {
           <Route component={Search} path="/search"/>
           <Route component={SignUp} path="/sign-up"/>
           <Route component={Images} path="/images"/>
+          <Route component={WatchLater} path="/watch-later"/>
           <Route path="/movie-details/:movieID" render={props => <MovieDetails key={props.match.params.movieID} {...props} />}/>
           {/*<PrivateRoute path="/watch-later" component={WatchLater}/>*/}
           <PrivateRoute path="/profile" component={Profile}/>

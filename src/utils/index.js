@@ -4,6 +4,10 @@ export * from "./dateParser";
 export * from "./sorter";
 export * from "./createNotification";
 
+export const isObjectEmpty = obj => {
+    return Object.keys(obj).length === 0 && obj.constructor === Object;
+}
+
 export const getRandomInArray = (arr, numberOfElements) => {
     // Shuffle array
     const shuffled = arr.sort(() => 0.5 - Math.random());

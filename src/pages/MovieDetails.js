@@ -8,28 +8,137 @@ import RateMovieModal from "../components/movies/RateMovieModal";
 import { Space } from 'antd';
 import {connect} from "react-redux";
 import {getAllMovies} from "../actions/movieActions";
+import {getReviewsByMovieID} from "../actions/reviewActions";
+import {addWatchLater, deleteWatchLater, getWatchLaterByCustomerIDAndMovieID, getAllMoviesAxios} from "../requests";
+import {isObjectEmpty} from '../utils';
+import {authenticationService} from '../_services';
 
 class MovieDetails extends Component {
-
     state = {
         movieItem: "",
-        randomMovies: []
+        randomMovies: [],
+        like: false,
+        loggedIn: "",
+        loading: true
     }
 
     async componentDidMount() {
-        console.log(this.props);
-        this.props.getAllMovies();
         const {movieID} = this.props.match.params;
-        console.log(this.props);
-        const {movies} = this.props;
+        this.props.getReviewsByMovieID(movieID);
+        const movies = await getAllMoviesAxios();
+
+        let liked = false;
+        let loggedIn = false;
+    
+        const currentUser = authenticationService.currentUserValue;
+
+        if (currentUser) {
+            loggedIn = true;
+            const customerID = currentUser._id;
+            const watchLaterItem = await getWatchLaterByCustomerIDAndMovieID(customerID, movieID);
+
+            if (!watchLaterItem || isObjectEmpty(watchLaterItem)) {
+                liked = false;
+            } else {
+                liked = true;
+            }
+        }
 
         const randomMovies = getRandomInArray(movies, 6);
         const movieItem = await getMovieByIDAxios(movieID);
 
         this.setState({
             movieItem,
-            randomMovies
+            randomMovies,
+            liked,
+            loggedIn,
+            loading: false
         })
+    }
+
+    changeLikeStatus = async () => {
+        const {movieItem} = this.state;
+        const movieID = movieItem._id;
+        const currentUser = authenticationService.currentUserValue;
+
+        if (currentUser) {
+            const customerID = currentUser._id;
+            if (!this.state.liked === true) {
+                await addWatchLater(customerID, movieID)
+            } else {
+                await deleteWatchLater(customerID, movieID)
+            }
+        }
+
+        this.setState({
+            liked: !this.state.liked
+        })
+    }
+
+    calculateRating = () => {
+        const {reviews, loading} = this.props;
+
+        if (!loading && reviews) {
+            if (reviews.length > 0) {
+                let meanRating = 0;
+
+                for (let i = 0; i < reviews.length; i++) {
+                    const reviewItem = reviews[i];
+                    console.log(reviews);
+                    meanRating += reviewItem.rate;
+                }
+    
+                if (reviews.length && reviews.length > 0) {
+                    meanRating = meanRating / reviews.length;
+                }
+                return meanRating;
+            }
+        }
+
+        return 0;
+    }
+
+    renderLikeButton = () => {
+        const {loggedIn, liked, loading} = this.state;
+        const {changeLikeStatus} = this;
+
+        if (loading) {
+            return (
+                <></>
+            )
+        }
+
+        if (loggedIn) {
+            return (
+            <div className="util-btn like-btn" onClick={changeLikeStatus}>
+                 <div className="icon">
+                     <span class="material-icons">
+                         favorite
+                     </span>
+                 </div>
+                 <p>{liked ? "Remove from Watch Later" : "Add to Watch Later"}</p>
+             </div>
+            )
+        }
+    }
+
+    renderRatingButton = () => {
+        const {loggedIn, loading} = this.state;
+
+        if (loading) {
+            return (
+                <></>
+            )
+        }
+
+        const {movieItem} = this.state;
+        const movieID = movieItem._id;
+
+        if (loggedIn) {
+            return (
+                <RateMovieModal movieID={movieID}/>
+            )
+        }
     }
 
     renderGenreList = () => {
@@ -107,7 +216,7 @@ class MovieDetails extends Component {
     }
 
     render() {
-        const {renderGenreList, renderActorList, renderDirectorList, renderProductionList} = this;
+        const {renderGenreList, renderActorList, renderDirectorList, renderProductionList, renderLikeButton, calculateRating, renderRatingButton} = this;
         const {movieItem, randomMovies} = this.state;
 
         if (!movieItem) {
@@ -137,22 +246,15 @@ class MovieDetails extends Component {
                                         <span class="material-icons">
                                             star_rate
                                         </span>
-                                        <p>{Number.parseFloat(rating).toFixed(1)}/5</p>
+                                        <p>{calculateRating().toFixed(1)}/5</p>
                                     </Space>
                                 </div>
                             <p>{numberWithCommas(view)} views</p>
 
                             <div className="movie-details-main-video__utils">
                                 <Space>
-                                    <RateMovieModal/>
-                                    <div className="util-btn like-btn">
-                                        <div className="icon">
-                                            <span class="material-icons">
-                                                favorite
-                                            </span>
-                                        </div>
-                                        <p>Add to Watch Later</p>
-                                    </div>
+                                    {renderRatingButton()}
+                                    {renderLikeButton()}
                             </Space>
                             </div>
                         </div>
@@ -166,19 +268,24 @@ class MovieDetails extends Component {
 
                                 <ul className="movie-details-main-description-details__item">
                                     <div className="row">
-                                        <li>
+                                        <li style={{
+                                            flex: "100%",
+                                            maxWidth: "100%"
+                                        }}>
                                             <h5>Actors</h5>
                                             <p className=" movie-description-details-list">
                                                 {renderActorList()}
                                             </p>
                                         </li>
                                         
+                                        {/*
                                         <li>
                                             <h5>Directors</h5>
                                             <p className="movie-description-details-list">
                                                     {renderDirectorList()}
                                             </p>
                                         </li>
+                                        */}
                                     </div>
                                 </ul>
 
@@ -210,11 +317,19 @@ class MovieDetails extends Component {
 
                                 <ul className="movie-details-main-description-details__item">
                                     <div className="row">
+                                        {/*
                                         
                                         <li>
                                             <h5>Production</h5>
                                             <p className="movie-description-details-list">
                                                 {renderProductionList()}
+                                            </p>
+                                        </li>
+                                        */}
+                                        <li>
+                                            <h5>Directors</h5>
+                                            <p className="movie-description-details-list">
+                                                    {renderDirectorList()}
                                             </p>
                                         </li>
                                         <li>
@@ -257,14 +372,18 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getAllMovies: () => {
             dispatch(getAllMovies())
-        }
+        },
+        getReviewsByMovieID: (movieID) => {
+            dispatch(getReviewsByMovieID(movieID))
+        },
     }
 }
 
 const mapStateToProps = (state) => {
     return {
         movies: state.movieReducer.movies,
-        loading: state.loadingReducer.loading
+        loading: state.loadingReducer.loading,
+        reviews: state.reviewReducer.reviews,
     }
 }
 

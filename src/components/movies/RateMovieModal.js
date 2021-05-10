@@ -1,15 +1,82 @@
+/*
+
+*/
+
 import React, {Component} from "react";
 import { Modal } from 'antd';
+import {
+  isObjectEmpty
+} from "../../utils";
+import {
+  authenticationService
+} from "../../_services";
+import {
+  getReviewByCustomerIDAndMovieIDAxios,
+  addRating,
+  editRating
+} from "../../requests/reviewRequests";
+import {message} from "antd";
 import {withRouter} from "react-router-dom";
+import {
+  getReviewsByMovieID,
+  addReview,
+  editReview
+} from "../../actions/reviewActions";
+import {connect} from "react-redux";
 
 class RateMovieModal extends Component {
   state = { 
     visible: false, 
     grading: 0, 
+    isRated: false, 
+    reviewID: "" ,
+    loggedIn: "",
+    loading: true,
     value: this.props.value ? this.props.value : false
   };
 
+  async componentDidMount() {
+    let {movieID} = this.props;
+    const currentUser = authenticationService.currentUserValue;
+
+    if (!currentUser) {
+      return;
+    }
+
+    const customerID = currentUser._id;
+
+    const review = await getReviewByCustomerIDAndMovieIDAxios(movieID, customerID);
+
+    const loggedIn = true;
+
+    if (!review) {
+      this.setState({
+        loggedIn
+      })
+    } else {
+      if (review || !isObjectEmpty(review)) {
+        this.setState({
+          grading: review.rate,
+          isRated: true,
+          reviewID: review._id,
+          loggedIn,
+          loading: false
+        })
+      }
+    }
+  }
+
   showModal = () => {
+    const {loggedIn, loading} = this.state;
+
+    if (!loggedIn && !loading) {
+      this.props.history.push("/sign-in");
+      message.error("You can rate after logging in");
+      return this.setState({
+        visible: false,
+      });
+    }
+
     this.setState({
       visible: true,
     });
@@ -23,6 +90,34 @@ class RateMovieModal extends Component {
 
   onSubmit = async (e) => {
     e.preventDefault();
+    const {movieID} = this.props;
+    const {grading, isRated, reviewID} = this.state;
+    const currentUser = authenticationService.currentUserValue;
+    if (grading === 0) {
+      return message.error("Please select a grade for the film");
+    }
+    if (!currentUser) {
+      return;
+    }
+    const customerID = currentUser._id;
+    if (isRated) {
+      const updatedRating = await editRating(reviewID, {movieID, grading, customerID});
+      this.props.editReview(updatedRating);
+      this.props.getReviewsByMovieID(movieID);
+      this.setState({
+        visible: false,
+        isRated: true,
+      })
+    } else {
+      const newRating = await addRating({movieID, grading, customerID});
+      this.props.addReview(newRating);
+      this.props.getReviewsByMovieID(movieID);
+      this.setState({
+        visible: false,
+        isRated: true,
+        reviewID: newRating._id
+      })
+    }
   }
 
   handleCancel = e => {
@@ -71,6 +166,7 @@ class RateMovieModal extends Component {
 
   render() {
     const {onSubmit, renderStarWidget, showModal} = this;
+    const {isRated} = this.state;
 
     return (
       <>
@@ -93,6 +189,13 @@ class RateMovieModal extends Component {
             {renderStarWidget()}
             <div style={{marginBottom: "20px", marginTop: "20px"}}></div>
             <button type="submit" className="btn btn-block btn-primary">RATE</button>
+            {/*
+            <div className="form-group">
+                <label htmlFor="grading">Grading: {grading}/10</label>
+                <input name="grading" id="grading" type="range" className="grading-slider" onChange={changeGrading} min="0" max="10" value={grading}/>
+                <button type="submit" className="section__btn">{isRated ? "RE-RATE" : "RATE"}</button>
+            </div>
+            */}
           </form>
         </Modal>
       </>
@@ -100,4 +203,24 @@ class RateMovieModal extends Component {
   }
 }
 
-export default withRouter(RateMovieModal);
+const mapDispatchToProps = (dispatch) => {
+  return {
+      getReviewsByMovieID: (movieID) => {
+          dispatch(getReviewsByMovieID(movieID))
+      },
+      addReview: (newReview) => {
+          dispatch(addReview(newReview))
+      },
+      editReview: (updatedReview) => {
+          dispatch(editReview(updatedReview))
+      }
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+      reviews: state.reviewReducer.reviews
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(RateMovieModal));

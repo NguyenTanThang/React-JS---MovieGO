@@ -1,27 +1,40 @@
 import React, { Component } from 'react';
 import MovieList from "../components/movies/MovieList";
 import Pagination from "../components/partials/Pagination";
+import {getWatchLaterByCustomerID} from "../requests";
 import {paginate} from "../utils";
 import {movieData} from "../data";
+import { authenticationService } from '../_services';
 
 class WatchLater extends Component {
 
     state = {
-        currentPage: 1
+        currentPage: 1,
+        movies: []
+    }
+
+    async componentDidMount() {
+        const currentUser = authenticationService.currentUserValue;
+
+        const movies = await getWatchLaterByCustomerID(currentUser._id);
+
+        this.setState({
+            movies
+        })
     }
 
     changePageNumber = (pageNumber) => {
         this.setState({
-            currentPage: pageNumber
+            currentPage: pageNumber,
         })
     }
 
     render() {
         const {changePageNumber} = this;
-        const {currentPage} = this.state;
+        const {currentPage, movies} = this.state;
 
-        const pageObject = paginate(movieData.length, currentPage, 5, 6);
-        let currentMovieData = movieData.slice(pageObject.startIndex, pageObject.endIndex + 1);
+        const pageObject = paginate(movies.length, currentPage, 5, 6);
+        let currentMovieData = movies.slice(pageObject.startIndex, pageObject.endIndex + 1);
 
         return (
             <div className='watch-later-page search-page'>
