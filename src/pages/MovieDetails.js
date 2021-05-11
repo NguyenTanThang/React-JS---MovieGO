@@ -227,7 +227,7 @@ class MovieDetails extends Component {
             )
         }
 
-        const {name, created_date, imageURL, view, rating, streamTapeCode, IMDBOject} = movieItem;
+        const {name, created_date, imageURL, view, rating, streamTapeCode, IMDBOject, _id} = movieItem;
 
         let {Awards, Plot, Released, imdbRating, imdbVotes, BoxOffice} = IMDBOject;
 
@@ -363,9 +363,9 @@ class MovieDetails extends Component {
                                 shortname="https-movie-go-netlify-app"
                                 config={
                                     {
-                                        url: "https://movie-go.netlify.app/",
-                                        identifier: movieItem._id,
-                                        title: "https://movie-go.netlify.app/",
+                                        url: `https://movie-go.netlify.app/${streamTapeCode}`,
+                                        identifier: streamTapeCode,
+                                        title: `https://movie-go.netlify.app/${streamTapeCode}`,
                                         language: 'en_UK'	
                                     }
                                 }
