@@ -12,6 +12,7 @@ import {getReviewsByMovieID} from "../actions/reviewActions";
 import {addWatchLater, deleteWatchLater, getWatchLaterByCustomerIDAndMovieID, getAllMoviesAxios, addView} from "../requests";
 import {isObjectEmpty} from '../utils';
 import {authenticationService} from '../_services';
+import { DiscussionEmbed } from 'disqus-react';
 
 class MovieDetails extends Component {
     state = {
@@ -356,8 +357,21 @@ class MovieDetails extends Component {
                                     {Plot}
                                 </p>
                             </div>
-                        </div>
 
+                            <div className="movie-details-main-info__comment">
+                            <DiscussionEmbed
+                                shortname="https-movie-go-netlify-app"
+                                config={
+                                    {
+                                        url: "https://movie-go.netlify.app/",
+                                        identifier: movieItem._id,
+                                        title: "https://movie-go.netlify.app/",
+                                        language: 'en_UK'	
+                                    }
+                                }
+                            />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="movie-details-side">

@@ -645,6 +645,10 @@
     border: 2px solid var(--primary-color) !important;
 }
 
+.movie-details-main-info__comment {
+    margin-top: 30px;
+}
+
 .movie-details-main-info__genre-box-list {
     margin-bottom: 20px;
 }
