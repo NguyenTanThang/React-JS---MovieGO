@@ -1,7 +1,24 @@
-import React, { Component } from 'react';
+import React from 'react';
 import MovieItem from "./MovieItem";
-import shortid from "shortid";
 
+function MovieList({movieList}) {
+
+    const renderMovieItems = () => {
+        return movieList.map(movieItem => {
+            return <MovieItem key={movieItem._id} movieItem={movieItem}/>
+        })
+    }
+
+    return (
+        <div className="container-fluid">
+            <div className="movie-list">
+                {renderMovieItems()}
+            </div>
+        </div>
+    )
+}
+
+/*
 class MovieList extends Component {
 
     renderMovieItems = () => {
@@ -22,5 +39,6 @@ class MovieList extends Component {
         )
     }
 }
+*/
 
 export default MovieList;

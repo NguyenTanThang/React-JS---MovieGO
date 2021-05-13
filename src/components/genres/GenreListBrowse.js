@@ -1,6 +1,24 @@
-import React, { Component } from 'react';
+import React from 'react';
 import GenreItemBrowse from "./GenreItemBrowse";
 
+function GenreListBrowse({genreList}) {
+
+    console.log(genreList);
+
+    const renderGenreBrowseItems = () => {
+        return genreList.map(genreItem => {
+            return <GenreItemBrowse genreItem={genreItem}/>
+        })
+    }
+
+    return (
+        <div className="browse-genres-list">
+            {renderGenreBrowseItems()}
+        </div>
+    )
+}
+
+/*
 class GenreListBrowse extends Component {
 
     renderGenreBrowseItems = () => {
@@ -21,5 +39,6 @@ class GenreListBrowse extends Component {
         )
     }
 }
+*/
 
 export default GenreListBrowse;

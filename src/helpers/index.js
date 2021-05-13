@@ -9,13 +9,13 @@ export const movieHeaderList = [
     {
         title: "Top Ratings",
         subTitle: "Highly rated movies",
-        locationURL: "/browse/trending",
+        locationURL: "/search?s=rating-desc",
         type: "all",
     },
     {
         title: "New Releases",
         subTitle: "Just got uploaded",
-        locationURL: "/browse/trending",
+        locationURL: "/search?s=date-desc",
         type: "all",
     },
     {

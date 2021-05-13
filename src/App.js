@@ -18,27 +18,37 @@ import SignUp from "./pages/SignUp";
 import Logout from "./pages/Logout";
 import Profile from "./pages/Profile";
 
+import GenreStore from "./reducers/hookReducers/GenreStore";
+import ImageStore from "./reducers/hookReducers/ImageStore";
+import ReviewStore from "./reducers/hookReducers/ReviewStore";
+
 function App() {
   return (
     <div className="App">
-      <Router>
-        <Navbar/>
-        <Switch>
-          <Route exact component={Home} path="/"/>
-          <Route component={SignIn} path="/sign-in"/>
-          <Route component={Browse} path="/browse" exact/>
-          <Route component={Trending} path="/browse/:variation" exact/>
-          <Route component={Search} path="/search"/>
-          <Route component={SignUp} path="/sign-up"/>
-          <Route component={Images} path="/images"/>
-          <Route component={WatchLater} path="/watch-later"/>
-          <Route path="/movie-details/:movieID" render={props => <MovieDetails key={props.match.params.movieID} {...props} />}/>
-          {/*<PrivateRoute path="/watch-later" component={WatchLater}/>*/}
-          <PrivateRoute path="/profile" component={Profile}/>
-          <PrivateRoute component={Logout} path="/logout"/>
-        </Switch>
-        <Footer/>
-      </Router>
+      <GenreStore>
+      <ImageStore>
+      <ReviewStore>
+        <Router>
+          <Navbar/>
+          <Switch>
+            <Route exact component={Home} path="/"/>
+            <Route component={SignIn} path="/sign-in"/>
+            <Route component={Browse} path="/browse" exact/>
+            <Route component={Trending} path="/browse/:variation" exact/>
+            <Route component={Search} path="/search"/>
+            <Route component={SignUp} path="/sign-up"/>
+            <Route component={Images} path="/images"/>
+            <Route component={WatchLater} path="/watch-later"/>
+            <Route path="/movie-details/:movieID" render={props => <MovieDetails key={props.match.params.movieID} {...props} />}/>
+            {/*<PrivateRoute path="/watch-later" component={WatchLater}/>*/}
+            <PrivateRoute path="/profile" component={Profile}/>
+            <PrivateRoute component={Logout} path="/logout"/>
+          </Switch>
+          <Footer/>
+        </Router>
+      </ReviewStore>
+      </ImageStore>
+      </GenreStore>
     </div>
   );
 }

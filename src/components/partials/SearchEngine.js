@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, Switch, Space } from 'antd';
-import {genreData, sortByDetails} from "../../data";
+import {sortByDetails} from "../../data";
 
+/*
 class GenreModal extends React.Component {
     state = {
-      loading: false,
       visible: false,
     };
   
@@ -56,7 +56,7 @@ class GenreModal extends React.Component {
     }
   
     render() {
-      const { visible, loading } = this.state;
+      const { visible } = this.state;
       const {handleChangeBoardMatches, renderGenreSearchItems} = this;
       const {searchObjectLocal} = this.props;
       const {boardMatches} = searchObjectLocal;
@@ -80,7 +80,7 @@ class GenreModal extends React.Component {
               <Button key="back" onClick={this.handleCancel}>
                 Return
               </Button>,
-              <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
+              <Button key="submit" type="primary" onClick={this.handleOk}>
                 Apply
               </Button>,
             ]}
@@ -112,7 +112,186 @@ class GenreModal extends React.Component {
       );
     }
 }
+*/
 
+function GenreModal({searchObjectLocal, setSearchObjectLocal, genres}) {
+
+  const [visible, setVisible] = useState(false);
+  const {boardMatches} = searchObjectLocal;
+
+  const showModal = () => {
+    setVisible(true);
+  };
+
+  const handleOk = () => {
+    setVisible(false);
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+  };
+
+  const handleChangeBoardMatches = (checked) => {
+    setSearchObjectLocal({
+        boardMatches: checked
+    })
+}
+
+const renderGenreSearchItems = () => {
+    const {sortGenres} = searchObjectLocal;
+
+    return genres.map(genreDataItem => {
+        if (sortGenres.includes(genreDataItem.name)) {
+            return <li className="search-genre-item active" onClick={() => {
+              setSearchObjectLocal({
+                    sortGenres: sortGenres.filter(genreItem => {
+                        return genreItem !== genreDataItem.name;
+                    })
+                })
+            }}>
+                {genreDataItem.name}
+            </li>
+        }
+        return <li className="search-genre-item" onClick={() => {
+          setSearchObjectLocal({
+                sortGenres: [...sortGenres, genreDataItem.name]
+            })
+        }}>
+            {genreDataItem.name}
+        </li>
+    })
+}
+
+return (
+  <>
+    <div className="search-util__item" onClick={showModal}>
+      <div className="icon">
+          <span class="material-icons">
+              style
+          </span>
+      </div>
+      <p>Genres</p>
+    </div>
+    <Modal
+      visible={visible}
+      title="Genres"
+      onOk={handleOk}
+      onCancel={handleCancel}
+      footer={[
+        <Button key="back" onClick={handleCancel}>
+          Return
+        </Button>,
+        <Button key="submit" type="primary" onClick={handleOk}>
+          Apply
+        </Button>,
+      ]}
+      width={800}
+    >
+      <div className="modal-section flex">
+          <div className="left">
+              <h4>Broad Matches</h4>
+              <p>More results, but less accurate. Videos will match if they contain any selected tag rather than all selected tags.</p>
+          </div>
+          <div className="right">
+              <Switch onChange={handleChangeBoardMatches}/>
+          </div>
+      </div>
+
+      <div className="modal-section">
+          <div className="top">
+              <h4>Include Tags</h4>
+              {boardMatches ? (<p>Find videos that has any selected tags below:</p>) : (<p>Find videos that has all selected tags below:</p>)}
+          </div>
+          <div className="bottom">
+              <Space size={[8, 16]} wrap>
+                  {renderGenreSearchItems()}
+              </Space>
+          </div>
+      </div>
+    </Modal>
+  </>
+);
+}
+
+function SortModal({searchObjectLocal, setSearchObjectLocal}) {
+  const [visible, setVisible] = useState(false);
+
+  const showModal = () => {
+    setVisible(true);
+  };
+
+  const handleOk = () => {
+    setVisible(false);
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+  };
+
+  const renderSortSearchItems = () => {
+    const {orderBy} = searchObjectLocal;
+
+    return sortByDetails.map(genreDataItem => {
+        if (orderBy === genreDataItem.key) {
+            return <li className="search-genre-item active" onClick={() => {
+              setSearchObjectLocal({
+                    orderBy: genreDataItem.key
+                })
+            }}>
+                {genreDataItem.name}
+            </li>
+        }
+        return <li className="search-genre-item" onClick={() => {
+          setSearchObjectLocal({
+                orderBy: genreDataItem.key
+            })
+        }}>
+            {genreDataItem.name}
+        </li>
+    })
+}
+
+return (
+  <>
+    <div className="search-util__item" onClick={showModal}>
+      <div className="icon">
+          <span class="material-icons">
+              sort
+          </span>
+      </div>
+      <p>Sort By</p>
+    </div>
+    <Modal
+      visible={visible}
+      title="Sort By"
+      onOk={handleOk}
+      onCancel={handleCancel}
+      footer={[
+        <Button key="back" onClick={handleCancel}>
+          Return
+        </Button>,
+        <Button key="submit" type="primary" onClick={handleOk}>
+          Apply
+        </Button>,
+      ]}
+    >
+      <div className="modal-section">
+          <div className="top">
+              <h4>Sort By</h4>
+              <p>The movies will be sorted by the selected order (you can only sort by 1 criteria at a time):</p>
+          </div>
+          <div className="bottom">
+              <Space size={[8, 16]} wrap>
+                  {renderSortSearchItems()}
+              </Space>
+          </div>
+      </div>
+    </Modal>
+  </>
+);
+}
+
+/*
 class SortModal extends React.Component {
     state = {
       loading: false,
@@ -202,7 +381,112 @@ class SortModal extends React.Component {
       );
     }
 }
+*/
 
+function SearchEngine({setSearchObject, clearSearchObject, searchQuery, genres}) {
+
+  const [searchObjectLocal, setSearchObjectLocalNA] = useState({
+    searchName: "",
+          orderBy: "AtoZ",
+          sortGenres: [],
+          boardMatches: false
+  })
+
+  const setSearchObjectLocal = (newSearchObject) => {
+    setSearchObjectLocalNA(prevSearchObject => {
+      return {
+        ...prevSearchObject,
+        ...newSearchObject
+      }
+    })
+    setSearchObject({
+        ...searchObjectLocal,
+        ...newSearchObject
+    })
+}
+
+  useEffect(() => {
+    const {t, g, s} = searchQuery;
+
+    if (t) {
+      setSearchObjectLocal({
+        searchName: t
+      })
+      setSearchObject({
+          ...searchObjectLocal,
+          searchName: t
+      })
+  }
+
+  if (g) {
+    setSearchObjectLocal({
+      sortGenres: [g]
+    })
+      setSearchObject({
+          ...searchObjectLocal,
+          sortGenres: [g]
+      })
+  }
+
+    if (s) {
+      setSearchObjectLocal({
+        orderBy: s
+      })
+      setSearchObject({
+          ...searchObjectLocal,
+          orderBy: s
+      })
+  }
+  }, []);
+
+  const clearSearchObjectLocal = () => {
+    setSearchObjectLocal({
+      searchName: "",
+      orderBy: "AtoZ",
+      sortGenres: [],
+      boardMatches: false
+  })
+    clearSearchObject();
+  }
+
+  return (
+    <div className="search-engine">
+        <div className="search-engine__search-bar">
+            <div className="container-fluid">
+                <input type="text" placeholder="Search..." className="form-control" onChange={(e) => {
+                    setSearchObjectLocal({
+                      searchName: e.target.value
+                    })
+                }} value={searchObjectLocal.searchName}/>
+            </div>
+        </div>
+        <div className="search-engine__utils-list">
+            <div className="container-fluid">
+                <ul>
+                    <li>
+                        <GenreModal searchObjectLocal={searchObjectLocal} setSearchObjectLocal={setSearchObjectLocal} genres={genres}/>
+                    </li>
+                    <li>
+                        <SortModal searchObjectLocal={searchObjectLocal} setSearchObjectLocal={setSearchObjectLocal}/>
+                    </li>
+                    <li>
+                        <div className="search-util__item" onClick={clearSearchObjectLocal}>
+                            <div className="icon">
+                                <span class="material-icons">
+                                    restart_alt
+                                </span>
+                            </div>
+                            <p>Reset All</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+)
+}
+
+/*
 class SearchEngine extends Component {
 
     state = {
@@ -330,5 +614,6 @@ class SearchEngine extends Component {
         )
     }
 }
+*/
 
 export default SearchEngine;

@@ -1,7 +1,21 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 //import {logout} from "../requests/authRequests";
 import {authenticationService} from "../_services";
- 
+
+function Logout() {
+
+    useEffect(() => {
+        authenticationService.logout();
+    }, []);
+
+    return (
+        <div>
+            
+        </div>
+    )
+}
+
+/*
 class Logout extends Component {
 
     componentWillMount() {
@@ -15,5 +29,6 @@ class Logout extends Component {
         )
     }
 }
+*/
 
 export default Logout;
